@@ -1,0 +1,36 @@
+/* Adaptations communes aux espaces EduGest sur petits écrans. */
+.mobile-menu-toggle { display: none; }
+
+@media (max-width: 767px) {
+    html, body { width: 100%; min-width: 0; overflow: hidden; }
+    body { height: 100dvh !important; }
+    body > aside {
+        position: fixed !important;
+        inset: 0 auto 0 0;
+        width: min(82vw, 20rem) !important;
+        max-width: 20rem;
+        height: 100dvh;
+        transform: translateX(-105%);
+        transition: transform .25s ease;
+        z-index: 50 !important;
+    }
+    body.menu-open > aside { transform: translateX(0); }
+    body.menu-open::before { content: ""; position: fixed; inset: 0; z-index: 40; background: rgba(15, 23, 42, .45); }
+    main { min-width: 0; width: 100%; }
+    .mobile-menu-toggle { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border-radius: .5rem; color: #334155; background: #f8fafc; border: 1px solid #e2e8f0; font-size: 1.1rem; }
+    header { min-height: 4rem !important; height: auto !important; padding: .75rem 1rem !important; gap: .75rem; }
+    header h2, header h1 { min-width: 0; font-size: 1.125rem !important; line-height: 1.35; }
+    header > div:last-child { min-width: 0; gap: .5rem !important; }
+    header > div:last-child span:not(#active-year-display):not(#active-period-display):not(#active-period) { display: none; }
+    main > .flex-1 { min-width: 0; padding: 1rem !important; }
+    .grid.grid-cols-2 { grid-template-columns: minmax(0, 1fr) !important; }
+    .flex.justify-between.items-center, .flex.justify-between.items-end { align-items: flex-start; gap: .75rem; }
+    .flex.justify-between.items-center > button, .flex.justify-between.items-end > button { flex-shrink: 0; }
+    .overflow-x-auto table { min-width: 36rem; }
+    .fixed.inset-0 > div { width: calc(100vw - 2rem) !important; max-width: 32rem !important; max-height: calc(100dvh - 2rem); overflow-y: auto; }
+}
+
+@media (max-width: 420px) {
+    main > .flex-1, .p-8, .p-6 { padding: 1rem !important; }
+    .gap-8 { gap: 1rem !important; }
+}

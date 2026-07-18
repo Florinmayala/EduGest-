@@ -7,6 +7,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../shared/css/responsive.css">
     
     <script>
         tailwind.config = {
@@ -119,7 +120,10 @@
     <main class="flex-1 flex flex-col h-full relative bg-light">
         
         <header class="h-16 bg-white shadow-sm flex items-center justify-between px-8 z-10">
-            <h2 id="page-title" class="text-2xl font-bold text-dark">Vue d'ensemble</h2>
+            <div class="flex items-center gap-3 min-w-0">
+                <button type="button" class="mobile-menu-toggle" onclick="toggleMobileNav()" aria-label="Ouvrir le menu"><i class="fas fa-bars"></i></button>
+                <h2 id="page-title" class="text-2xl font-bold text-dark">Vue d'ensemble</h2>
+            </div>
             <div class="flex items-center space-x-6 text-sm">
                 <span class="bg-blue-100 text-brand px-3 py-1 rounded-full font-medium border border-blue-200">
                     <i class="fas fa-calendar-alt mr-1"></i> Année active : <span id="active-year-display">2026-2027</span>
@@ -844,5 +848,6 @@
         window.onload = () => { renderData(); switchTab('dashboard'); };
 
     </script>
+    <script src="../shared/js/mobile-nav.js"></script>
 </body>
 </html>
