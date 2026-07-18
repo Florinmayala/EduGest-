@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direction & Secrétariat - EduGest</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#1e3a8a',     // Bleu profond (Direction)
+                        secondary: '#3b82f6', // Bleu clair
+                        accent: '#f59e0b',    // Ambre
+                        dark: '#1e293b',      // Slate 800
+                        light: '#f8fafc',     // Slate 50
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .active-nav {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #f59e0b;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="text-slate-800 h-screen flex overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-brand text-slate-300 flex flex-col shadow-xl z-20">
+        <div class="h-16 flex items-center justify-center border-b border-blue-800/50 font-bold text-xl tracking-wider text-white">
+            <i class="fas fa-school text-accent mr-3"></i> Direction
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-6">
+            <ul class="space-y-2">
+                <li>
+                    <a href="#" onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-link active-nav flex items-center py-3 px-6 hover:text-white transition-colors">
+                        <i class="fas fa-chart-pie w-6 text-center mr-2"></i> Vue d'ensemble
+                    </a>
+                </li>
+                
+                <li class="px-6 py-2 text-xs font-semibold text-blue-400 uppercase tracking-wider mt-4">
+                    Paramétrage
+                </li>
+                <li>
+                    <a href="#" onclick="switchTab('structure')" id="nav-structure" class="nav-link flex items-center py-3 px-6 hover:text-white transition-colors">
+                        <i class="fas fa-cogs w-6 text-center mr-2"></i> Années & Niveaux
+                    </a>
+                </li>
+                
+                <li class="px-6 py-2 text-xs font-semibold text-blue-400 uppercase tracking-wider mt-4">
+                    Pédagogie
+                </li>
+                <li>
+                    <a href="#" onclick="switchTab('classes')" id="nav-classes" class="nav-link flex items-center py-3 px-6 hover:text-white transition-colors">
+                        <i class="fas fa-chalkboard w-6 text-center mr-2"></i> Classes & Cours
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="switchTab('enseignants')" id="nav-enseignants" class="nav-link flex items-center py-3 px-6 hover:text-white transition-colors">
+                        <i class="fas fa-chalkboard-teacher w-6 text-center mr-2"></i> Enseignants
+                    </a>
+                </li>
+
+                <li class="px-6 py-2 text-xs font-semibold text-blue-400 uppercase tracking-wider mt-4">
+                    Secrétariat
+                </li>
+                <li>
+                    <a href="#" onclick="switchTab('eleves')" id="nav-eleves" class="nav-link flex items-center py-3 px-6 hover:text-white transition-colors">
+                        <i class="fas fa-user-graduate w-6 text-center mr-2"></i> Élèves & Inscriptions
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <a href="../connexion/index.html" class="mx-4 mb-4 flex items-center justify-center gap-2 rounded-lg border border-blue-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-800">
+            <i class="fas fa-sign-out-alt"></i> Déconnexion
+        </a>
+
+        <div class="p-4 bg-blue-950 flex items-center text-sm border-t border-blue-800/50">
+            <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-white mr-3">
+                <i class="fas fa-user-tie"></i>
+            </div>
+            <div>
+                <p class="font-bold text-white">M. Le Préfet</p>
+                <p class="text-xs text-blue-300">Admin. Principale</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-full relative bg-light">
+        
+        <header class="h-16 bg-white shadow-sm flex items-center justify-between px-8 z-10">
+            <h2 id="page-title" class="text-2xl font-bold text-dark">Vue d'ensemble</h2>
+            <div class="flex items-center space-x-6 text-sm">
+                <span class="bg-blue-100 text-brand px-3 py-1 rounded-full font-medium border border-blue-200">
+                    <i class="fas fa-calendar-alt mr-1"></i> Année active : <span id="active-year-display">2026-2027</span>
+                </span>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-8">
+            
+            <!-- SECTION 1: DASHBOARD -->
+            <section id="sec-dashboard" class="fade-in block space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-100 flex items-center">
+                        <div class="w-14 h-14 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 text-2xl mr-4">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-500 font-medium">Élèves Inscrits</p>
+                            <h3 class="text-2xl font-bold text-dark" id="stat-eleves">0</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-100 flex items-center">
+                        <div class="w-14 h-14 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 text-2xl mr-4">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-500 font-medium">Enseignants</p>
+                            <h3 class="text-2xl font-bold text-dark" id="stat-profs">0</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-100 flex items-center">
+                        <div class="w-14 h-14 rounded-lg bg-amber-50 flex items-center justify-center text-accent text-2xl mr-4">
+                            <i class="fas fa-door-open"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-500 font-medium">Classes Ouvertes</p>
+                            <h3 class="text-2xl font-bold text-dark" id="stat-classes">0</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-100 flex items-center">
+                        <div class="w-14 h-14 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 text-2xl mr-4">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-500 font-medium">Cours Dispensés</p>
+                            <h3 class="text-2xl font-bold text-dark" id="stat-cours">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-100">
+                    <h3 class="text-lg font-bold text-dark mb-4 border-b pb-2">Bienvenue dans l'espace Direction</h3>
+                    <p class="text-slate-600">Cette interface centralise les opérations administratives :</p>
+                    <ul class="list-disc list-inside mt-3 text-slate-600 space-y-1">
+                        <li><strong>Paramétrage :</strong> Définir les années scolaires, périodes et niveaux d'étude.</li>
+                        <li><strong>Pédagogie :</strong> Créer les classes, les cours, et affecter les cours aux classes <span class="text-xs bg-slate-200 px-1 rounded text-slate-700 font-mono">(Table Suivre)</span>.</li>
+                        <li><strong>RH :</strong> Recruter les enseignants et leur attribuer des cours <span class="text-xs bg-slate-200 px-1 rounded text-slate-700 font-mono">(Table Dispenser)</span>.</li>
+                        <li><strong>Secrétariat :</strong> Inscrire les élèves et les affecter à une année et une classe <span class="text-xs bg-slate-200 px-1 rounded text-slate-700 font-mono">(Table Frequenter)</span>.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- SECTION 2: STRUCTURE ACADÉMIQUE -->
+            <section id="sec-structure" class="hidden fade-in space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Table AnneeScolaire -->
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 flex flex-col">
+                        <div class="p-4 border-b bg-slate-50 rounded-t-xl flex justify-between items-center">
+                            <h3 class="font-bold text-dark"><i class="fas fa-calendar mr-2 text-brand"></i> Années Scolaires</h3>
+                        </div>
+                        <div class="p-4 flex-1">
+                            <ul id="list-annees" class="space-y-2 mb-4"></ul>
+                            <div class="flex gap-2">
+                                <input type="text" id="input-annee-lib" placeholder="Ex: 2027-2028" class="flex-1 border rounded px-3 py-1 text-sm focus:outline-brand">
+                                <button onclick="addAnnee()" class="bg-brand text-white px-3 py-1 rounded text-sm hover:bg-blue-800"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table Niveau -->
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 flex flex-col">
+                        <div class="p-4 border-b bg-slate-50 rounded-t-xl flex justify-between items-center">
+                            <h3 class="font-bold text-dark"><i class="fas fa-layer-group mr-2 text-brand"></i> Niveaux d'Étude</h3>
+                        </div>
+                        <div class="p-4 flex-1">
+                            <ul id="list-niveaux" class="space-y-2 mb-4"></ul>
+                            <div class="flex gap-2">
+                                <input type="text" id="input-niveau-lib" placeholder="Ex: Primaire" class="flex-1 border rounded px-3 py-1 text-sm focus:outline-brand">
+                                <button onclick="addNiveau()" class="bg-brand text-white px-3 py-1 rounded text-sm hover:bg-blue-800"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table Periode -->
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 flex flex-col">
+                        <div class="p-4 border-b bg-slate-50 rounded-t-xl flex justify-between items-center">
+                            <h3 class="font-bold text-dark"><i class="fas fa-clock mr-2 text-brand"></i> Périodes (Année Active)</h3>
+                        </div>
+                        <div class="p-4 flex-1">
+                            <ul id="list-periodes" class="space-y-2 mb-4"></ul>
+                            <div class="flex gap-2">
+                                <input type="text" id="input-periode-lib" placeholder="Ex: Trimestre 3" class="flex-1 border rounded px-3 py-1 text-sm focus:outline-brand">
+                                <button onclick="addPeriode()" class="bg-brand text-white px-3 py-1 rounded text-sm hover:bg-blue-800"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECTION 3: CLASSES ET COURS -->
+            <section id="sec-classes" class="hidden fade-in space-y-6">
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Gestion Classes -->
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-100">
+                        <div class="p-4 border-b flex justify-between items-center">
+                            <h3 class="font-bold text-dark text-lg">Table: Classe</h3>
+                            <button onclick="toggleModal('modal-add-classe')" class="text-sm bg-brand text-white px-3 py-1.5 rounded hover:bg-blue-800">
+                                Créer Classe
+                            </button>
+                        </div>
+                        <div class="p-0 overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-slate-50 text-slate-600 border-b">
+                                    <tr>
+                                        <th class="px-4 py-3">Code</th>
+                                        <th class="px-4 py-3">Libellé</th>
+                                        <th class="px-4 py-3">Capacité</th>
+                                        <th class="px-4 py-3">Niveau (FK)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-classes-body" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Gestion Cours -->
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-100">
+                        <div class="p-4 border-b flex justify-between items-center">
+                            <h3 class="font-bold text-dark text-lg">Table: Cours</h3>
+                            <button onclick="toggleModal('modal-add-cours')" class="text-sm bg-emerald-600 text-white px-3 py-1.5 rounded hover:bg-emerald-700">
+                                Nouveau Cours
+                            </button>
+                        </div>
+                        <div class="p-0 overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-slate-50 text-slate-600 border-b">
+                                    <tr>
+                                        <th class="px-4 py-3">Code</th>
+                                        <th class="px-4 py-3">Titre</th>
+                                        <th class="px-4 py-3">Vol. Horaire</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-cours-body" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Association SUIVRE -->
+                <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-6">
+                    <h3 class="font-bold text-indigo-900 mb-2"><i class="fas fa-link mr-2"></i> Association : Classe suit Cours (Table `Suivre`)</h3>
+                    <p class="text-sm text-indigo-700 mb-4">Affectez un cours au programme d'une classe spécifique.</p>
+                    
+                    <div class="flex gap-4 items-end">
+                        <div class="flex-1">
+                            <label class="block text-xs font-bold text-indigo-900 uppercase mb-1">Classe (#CodeClasse)</label>
+                            <select id="select-suivre-classe" class="w-full border-indigo-200 rounded p-2 focus:outline-brand"></select>
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-xs font-bold text-indigo-900 uppercase mb-1">Cours (#CodeCours)</label>
+                            <select id="select-suivre-cours" class="w-full border-indigo-200 rounded p-2 focus:outline-brand"></select>
+                        </div>
+                        <button onclick="addRelationSuivre()" class="bg-indigo-600 text-white px-6 py-2 rounded font-medium hover:bg-indigo-700">
+                            Affecter
+                        </button>
+                    </div>
+
+                    <div class="mt-4 bg-white rounded border border-indigo-100 p-4 max-h-40 overflow-y-auto">
+                        <h4 class="text-xs font-bold text-slate-500 uppercase mb-2">Programme actuel (Enregistrements Suivre)</h4>
+                        <ul id="list-relations-suivre" class="text-sm space-y-1"></ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: ENSEIGNANTS -->
+            <section id="sec-enseignants" class="hidden fade-in space-y-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-dark">Corps Professoral</h2>
+                        <p class="text-slate-500 text-sm">Gestion des enseignants et attribution de leurs cours.</p>
+                    </div>
+                    <button onclick="toggleModal('modal-add-prof')" class="bg-brand text-white px-4 py-2 rounded shadow hover:bg-blue-800 transition">
+                        <i class="fas fa-user-plus mr-2"></i> Recruter Enseignant
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Table Enseignant -->
+                    <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-slate-50 text-slate-600 border-b">
+                                    <tr>
+                                        <th class="px-4 py-3">Matricule</th>
+                                        <th class="px-4 py-3">Identité</th>
+                                        <th class="px-4 py-3">Spécialité</th>
+                                        <th class="px-4 py-3">Téléphone</th>
+                                        <th class="px-4 py-3 text-center">Cours Attribués</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-profs-body" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Association DISPENSER -->
+                    <div class="bg-amber-50 border border-amber-100 rounded-xl p-5 flex flex-col">
+                        <h3 class="font-bold text-amber-900 mb-2"><i class="fas fa-chalkboard-teacher mr-2"></i> Table `Dispenser`</h3>
+                        <p class="text-xs text-amber-800 mb-4">Attribuer un cours à un enseignant.</p>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-bold text-amber-900 mb-1">Enseignant (#Matricule)</label>
+                                <select id="select-disp-prof" class="w-full border-amber-200 rounded p-2 text-sm focus:outline-brand"></select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-amber-900 mb-1">Cours (#CodeCours)</label>
+                                <select id="select-disp-cours" class="w-full border-amber-200 rounded p-2 text-sm focus:outline-brand"></select>
+                            </div>
+                            <button onclick="addRelationDispenser()" class="w-full bg-accent text-white py-2 rounded font-medium hover:bg-amber-600 mt-2">
+                                Enregistrer Attribution
+                            </button>
+                        </div>
+                        
+                        <div class="mt-4 flex-1 bg-white rounded border border-amber-100 p-3 overflow-y-auto">
+                            <ul id="list-relations-dispenser" class="text-xs space-y-2"></ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: ÉLÈVES -->
+            <section id="sec-eleves" class="hidden fade-in space-y-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-dark">Dossiers des Élèves</h2>
+                        <p class="text-slate-500 text-sm">Inscriptions et affectations aux classes (Tables Eleve & Frequenter).</p>
+                    </div>
+                    <button onclick="toggleModal('modal-add-eleve')" class="bg-emerald-600 text-white px-4 py-2 rounded shadow hover:bg-emerald-700 transition">
+                        <i class="fas fa-user-graduate mr-2"></i> Nouvelle Inscription
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div class="p-4 border-b bg-slate-50 flex gap-4">
+                        <input type="text" placeholder="Rechercher un élève..." class="border rounded px-3 py-1.5 text-sm w-64 focus:outline-brand">
+                        <select class="border rounded px-3 py-1.5 text-sm focus:outline-brand" id="filter-classe-eleve" onchange="renderEleves()">
+                            <option value="">Toutes les classes</option>
+                        </select>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-slate-100 text-slate-600 border-b">
+                                <tr>
+                                    <th class="px-4 py-3">Matricule</th>
+                                    <th class="px-4 py-3">Nom, Postnom, Prénom</th>
+                                    <th class="px-4 py-3">Sexe</th>
+                                    <th class="px-4 py-3">Classe (FK)</th>
+                                    <th class="px-4 py-3">Année (Frequenter)</th>
+                                    <th class="px-4 py-3">Contact Parent</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-eleves-body" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- MODALS -->
+    
+    <!-- Modal: Créer Classe -->
+    <div id="modal-add-classe" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-center justify-center fade-in">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+            <h3 class="text-lg font-bold text-dark mb-4 border-b pb-2">Créer une Classe</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Code (ex: 7A)</label>
+                    <input type="text" id="cl-code" class="w-full border rounded p-2 focus:outline-brand">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Libellé (ex: 7ème A)</label>
+                    <input type="text" id="cl-lib" class="w-full border rounded p-2 focus:outline-brand">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Capacité Maximale</label>
+                    <input type="number" id="cl-cap" value="40" class="w-full border rounded p-2 focus:outline-brand">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Niveau (#CodeNiveau)</label>
+                    <select id="cl-niveau" class="w-full border rounded p-2 focus:outline-brand"></select>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 mt-6">
+                <button onclick="toggleModal('modal-add-classe')" class="px-4 py-2 border rounded text-slate-600 hover:bg-slate-50">Annuler</button>
+                <button onclick="submitClasse()" class="px-4 py-2 bg-brand text-white rounded hover:bg-blue-800">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Créer Cours -->
+    <div id="modal-add-cours" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-center justify-center fade-in">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+            <h3 class="text-lg font-bold text-dark mb-4 border-b pb-2">Nouveau Cours</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Code Cours (Unique)</label>
+                    <input type="text" id="cr-code" class="w-full border rounded p-2 focus:outline-brand uppercase">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Titre du cours</label>
+                    <input type="text" id="cr-titre" class="w-full border rounded p-2 focus:outline-brand">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Volume Horaire Annuel</label>
+                    <input type="number" id="cr-vol" value="100" class="w-full border rounded p-2 focus:outline-brand">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 mt-6">
+                <button onclick="toggleModal('modal-add-cours')" class="px-4 py-2 border rounded text-slate-600 hover:bg-slate-50">Annuler</button>
+                <button onclick="submitCours()" class="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700">Créer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Inscription Élève -->
+    <div id="modal-add-eleve" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-center justify-center fade-in">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl p-6">
+            <h3 class="text-xl font-bold text-dark border-b pb-2 mb-4">Dossier d'Inscription</h3>
+            <form id="form-eleve" onsubmit="submitEleve(event)">
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm text-slate-700 mb-1">Nom</label>
+                        <input type="text" id="el-nom" required class="w-full border rounded p-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-700 mb-1">Postnom</label>
+                        <input type="text" id="el-postnom" class="w-full border rounded p-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-700 mb-1">Prénom</label>
+                        <input type="text" id="el-prenom" required class="w-full border rounded p-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-700 mb-1">Sexe</label>
+                        <select id="el-sexe" required class="w-full border rounded p-2">
+                            <option value="M">Masculin</option><option value="F">Féminin</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-700 mb-1">Date Naissance</label>
+                        <input type="date" id="el-date" required class="w-full border rounded p-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-700 mb-1">Tél. Parent</label>
+                        <input type="text" id="el-tel" required class="w-full border rounded p-2">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm text-slate-700 mb-1">Adresse</label>
+                    <input type="text" id="el-adresse" class="w-full border rounded p-2">
+                </div>
+                
+                <div class="bg-slate-50 p-3 rounded border mb-4">
+                    <h4 class="font-bold text-sm text-brand mb-2">Affectation Académique</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs text-slate-600 mb-1">Classe (#CodeClasse)</label>
+                            <select id="el-classe" required class="w-full border rounded p-2"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-600 mb-1">Année Scolaire (Table Frequenter)</label>
+                            <select id="el-annee" required class="w-full border rounded p-2 bg-slate-100 pointer-events-none"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="toggleModal('modal-add-eleve')" class="px-4 py-2 border rounded text-slate-600">Annuler</button>
+                    <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded">Inscrire</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Recruter Enseignant -->
+    <div id="modal-add-prof" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-center justify-center fade-in">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl p-6">
+            <h3 class="text-xl font-bold text-dark border-b pb-2 mb-4">Recrutement Enseignant</h3>
+            <form id="form-prof" onsubmit="submitProf(event)">
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div><label class="block text-sm text-slate-700 mb-1">Nom</label><input type="text" id="pr-nom" required class="w-full border rounded p-2"></div>
+                    <div><label class="block text-sm text-slate-700 mb-1">Prénom</label><input type="text" id="pr-prenom" required class="w-full border rounded p-2"></div>
+                    <div>
+                        <label class="block text-sm text-slate-700 mb-1">Sexe</label>
+                        <select id="pr-sexe" required class="w-full border rounded p-2"><option value="M">Masculin</option><option value="F">Féminin</option></select>
+                    </div>
+                    <div><label class="block text-sm text-slate-700 mb-1">Spécialité</label><input type="text" id="pr-spec" required class="w-full border rounded p-2"></div>
+                    <div><label class="block text-sm text-slate-700 mb-1">Téléphone</label><input type="text" id="pr-tel" required class="w-full border rounded p-2"></div>
+                    <div><label class="block text-sm text-slate-700 mb-1">Date d'embauche</label><input type="date" id="pr-date" required class="w-full border rounded p-2"></div>
+                </div>
+                <div class="mb-4"><label class="block text-sm text-slate-700 mb-1">Adresse</label><input type="text" id="pr-adresse" class="w-full border rounded p-2"></div>
+                
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="toggleModal('modal-add-prof')" class="px-4 py-2 border rounded text-slate-600">Annuler</button>
+                    <button type="submit" class="px-4 py-2 bg-brand text-white rounded">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        // --- 1. BASE DE DONNÉES SIMULÉE (Tables relationnelles) ---
+        
+        let db = {
+            anneeScolaire: [{ CodeAnnee: 'A26-27', libelle: '2026-2027' }],
+            niveau: [{ codeNiveau: 'EB', libelle: 'Education de Base' }, { codeNiveau: 'HUM', libelle: 'Humanités' }],
+            periode: [{ CodePeriode: 'T1', libelle: 'Trimestre 1', codeAnnee: 'A26-27' }, { CodePeriode: 'T2', libelle: 'Trimestre 2', codeAnnee: 'A26-27' }],
+            classe: [
+                { CodeClasse: '7A', libelle: '7ème A', capaciteMax: 40, codeniveau: 'EB' },
+                { CodeClasse: '8A', libelle: '8ème A', capaciteMax: 35, codeniveau: 'EB' }
+            ],
+            cours: [
+                { codecours: 'MATH', titre: 'Mathématiques', volumeHoraire: 120 },
+                { codecours: 'FR', titre: 'Français', volumeHoraire: 100 },
+                { codecours: 'INFO', titre: 'Informatique', volumeHoraire: 50 }
+            ],
+            eleve: [
+                { Matricule: 'MAT001', nom: 'ILUNGA', Postnom: 'MBUYI', prenom: 'David', sexe: 'M', DateNaissance: '2010-05-12', Adresse: 'Ngaliema', TelephoneParent: '0810000001', CodeClasse: '7A' },
+                { Matricule: 'MAT002', nom: 'KABEYA', Postnom: '', prenom: 'Sarah', sexe: 'F', DateNaissance: '2011-02-20', Adresse: 'Lemba', TelephoneParent: '0820000002', CodeClasse: '8A' }
+            ],
+            enseignant: [
+                { MatriculeEnseignant: 'PRF001', nom: 'KAPINGA', prenom: 'Alain', sexe: 'M', telephone: '0812345678', adresse: 'Gombe', specialite: 'Mathématiques', dateembauche: '2018-09-01' },
+                { MatriculeEnseignant: 'PRF002', nom: 'MUSAU', prenom: 'Chantal', sexe: 'F', telephone: '0994567890', adresse: 'Bandal', specialite: 'Français', dateembauche: '2020-11-02' }
+            ],
+            // Tables d'association
+            frequenter: [
+                { MatriculeEleve: 'MAT001', codeAnnee: 'A26-27' },
+                { MatriculeEleve: 'MAT002', codeAnnee: 'A26-27' }
+            ],
+            suivre: [
+                { Codeclasse: '7A', codecours: 'MATH' },
+                { Codeclasse: '7A', codecours: 'FR' },
+                { Codeclasse: '8A', codecours: 'INFO' }
+            ],
+            dispenser: [
+                { Codecours: 'MATH', matriculeEnseignant: 'PRF001' },
+                { Codecours: 'FR', matriculeEnseignant: 'PRF002' }
+            ]
+        };
+
+        const ACTIVE_YEAR = 'A26-27'; // L'année scolaire en cours gérée par le secrétariat
+
+        // --- 2. LOGIQUE DE NAVIGATION ---
+        const sections = ['dashboard', 'structure', 'classes', 'enseignants', 'eleves'];
+        const pageTitles = {
+            'dashboard': 'Vue d\'ensemble',
+            'structure': 'Paramétrage Structurel',
+            'classes': 'Gestion Pédagogique (Classes & Cours)',
+            'enseignants': 'Gestion du Personnel Enseignant',
+            'eleves': 'Secrétariat: Inscriptions et Dossiers'
+        };
+
+        function switchTab(tabId) {
+            sections.forEach(sec => {
+                document.getElementById(`sec-${sec}`).classList.add('hidden');
+                document.getElementById(`sec-${sec}`).classList.remove('block');
+                document.getElementById(`nav-${sec}`).classList.remove('active-nav');
+                document.getElementById(`nav-${sec}`).classList.add('text-slate-300');
+            });
+            document.getElementById(`sec-${tabId}`).classList.remove('hidden');
+            document.getElementById(`sec-${tabId}`).classList.add('block');
+            document.getElementById(`nav-${tabId}`).classList.add('active-nav');
+            document.getElementById(`nav-${tabId}`).classList.remove('text-slate-300');
+            document.getElementById('page-title').innerText = pageTitles[tabId];
+
+            renderData(); // Rafraichit les données de la vue courante
+        }
+
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.toggle('hidden');
+            updateSelects(); // Met à jour les listes déroulantes quand on ouvre une modale
+        }
+
+        function showNotif(msg) {
+            const notif = document.createElement('div');
+            notif.className = 'fixed bottom-4 right-4 bg-slate-800 text-white px-6 py-3 rounded shadow-lg z-50 border-l-4 border-accent fade-in';
+            notif.innerHTML = `<i class="fas fa-info-circle mr-2 text-accent"></i> ${msg}`;
+            document.body.appendChild(notif);
+            setTimeout(() => { notif.style.opacity = 0; setTimeout(() => notif.remove(), 300); }, 3000);
+        }
+
+        // --- STREAMING_CHUNK:Fonctions d'affichage (Render) des données ---
+        function renderData() {
+            // Dashboard
+            document.getElementById('stat-eleves').innerText = db.eleve.length;
+            document.getElementById('stat-profs').innerText = db.enseignant.length;
+            document.getElementById('stat-classes').innerText = db.classe.length;
+            document.getElementById('stat-cours').innerText = db.cours.length;
+
+            // Structure
+            document.getElementById('list-annees').innerHTML = db.anneeScolaire.map(a => `<li class="text-sm bg-slate-50 p-2 border rounded flex justify-between"><span>${a.libelle}</span><span class="text-xs text-slate-400 font-mono">${a.CodeAnnee}</span></li>`).join('');
+            document.getElementById('list-niveaux').innerHTML = db.niveau.map(n => `<li class="text-sm bg-slate-50 p-2 border rounded flex justify-between"><span>${n.libelle}</span><span class="text-xs text-slate-400 font-mono">${n.codeNiveau}</span></li>`).join('');
+            document.getElementById('list-periodes').innerHTML = db.periode.filter(p => p.codeAnnee === ACTIVE_YEAR).map(p => `<li class="text-sm bg-slate-50 p-2 border rounded flex justify-between"><span>${p.libelle}</span><span class="text-xs text-slate-400 font-mono">${p.CodePeriode}</span></li>`).join('');
+
+            // Classes & Cours
+            document.getElementById('table-classes-body').innerHTML = db.classe.map(c => `
+                <tr class="hover:bg-slate-50">
+                    <td class="px-4 py-2 font-mono text-brand">${c.CodeClasse}</td>
+                    <td class="px-4 py-2 font-medium">${c.libelle}</td>
+                    <td class="px-4 py-2">${c.capaciteMax}</td>
+                    <td class="px-4 py-2 text-xs bg-slate-100 rounded px-2 inline-block mt-1">${c.codeniveau}</td>
+                </tr>`).join('');
+            
+            document.getElementById('table-cours-body').innerHTML = db.cours.map(c => `
+                <tr class="hover:bg-slate-50">
+                    <td class="px-4 py-2 font-mono text-emerald-600">${c.codecours}</td>
+                    <td class="px-4 py-2 font-medium">${c.titre}</td>
+                    <td class="px-4 py-2">${c.volumeHoraire} H</td>
+                </tr>`).join('');
+
+            // Relations Suivre
+            document.getElementById('list-relations-suivre').innerHTML = db.suivre.map(s => {
+                const c = db.classe.find(x => x.CodeClasse === s.Codeclasse)?.libelle || s.Codeclasse;
+                const cr = db.cours.find(x => x.codecours === s.codecours)?.titre || s.codecours;
+                return `<li class="flex items-center justify-between p-2 border-b last:border-0"><span class="font-medium text-slate-700">${c}</span> <i class="fas fa-arrow-right text-slate-300 text-xs"></i> <span class="text-emerald-700">${cr}</span></li>`;
+            }).join('');
+
+            // Enseignants & Relations Dispenser
+            document.getElementById('table-profs-body').innerHTML = db.enseignant.map(p => {
+                // Trouver les cours affectés (Jointure)
+                const affectations = db.dispenser.filter(d => d.matriculeEnseignant === p.MatriculeEnseignant);
+                const badges = affectations.map(a => `<span class="bg-amber-100 text-amber-800 text-[10px] px-1.5 py-0.5 rounded font-bold mr-1">${a.Codecours}</span>`).join('');
+                
+                return `
+                <tr class="hover:bg-slate-50">
+                    <td class="px-4 py-3 font-mono text-xs text-slate-500">${p.MatriculeEnseignant}</td>
+                    <td class="px-4 py-3 font-bold text-dark">${p.prenom} ${p.nom}</td>
+                    <td class="px-4 py-3 text-slate-600">${p.specialite}</td>
+                    <td class="px-4 py-3">${p.telephone}</td>
+                    <td class="px-4 py-3 text-center">${badges || '-'}</td>
+                </tr>`;
+            }).join('');
+
+            document.getElementById('list-relations-dispenser').innerHTML = db.dispenser.map(d => {
+                const prof = db.enseignant.find(x => x.MatriculeEnseignant === d.matriculeEnseignant);
+                const cours = db.cours.find(x => x.codecours === d.Codecours);
+                return `<li class="p-2 border-b bg-white flex justify-between items-center"><span class="font-medium">${prof?.nom || d.matriculeEnseignant}</span> <span class="bg-amber-100 text-amber-800 px-2 py-1 rounded font-mono">${cours?.titre || d.Codecours}</span></li>`;
+            }).join('');
+
+            // Élèves
+            const classFilter = document.getElementById('filter-classe-eleve').value;
+            let elevesToShow = classFilter ? db.eleve.filter(e => e.CodeClasse === classFilter) : db.eleve;
+            
+            document.getElementById('table-eleves-body').innerHTML = elevesToShow.map(e => {
+                const freq = db.frequenter.find(f => f.MatriculeEleve === e.Matricule);
+                return `
+                <tr class="hover:bg-slate-50">
+                    <td class="px-4 py-3 font-mono text-xs text-brand">${e.Matricule}</td>
+                    <td class="px-4 py-3 font-medium">${e.nom} ${e.Postnom} ${e.prenom}</td>
+                    <td class="px-4 py-3">${e.sexe}</td>
+                    <td class="px-4 py-3"><span class="bg-blue-100 text-blue-800 font-bold px-2 py-1 rounded text-xs">${e.CodeClasse}</span></td>
+                    <td class="px-4 py-3 text-xs text-slate-500">${freq ? freq.codeAnnee : '-'}</td>
+                    <td class="px-4 py-3 text-slate-600">${e.TelephoneParent}</td>
+                </tr>`;
+            }).join('');
+
+            updateSelects();
+        }
+
+        // --- STREAMING_CHUNK:Fonctions d'ajout et de gestion des formulaires ---
+        function updateSelects() {
+            const clsOpts = db.classe.map(c => `<option value="${c.CodeClasse}">${c.CodeClasse} - ${c.libelle}</option>`).join('');
+            const crsOpts = db.cours.map(c => `<option value="${c.codecours}">${c.titre} (${c.codecours})</option>`).join('');
+            const prfOpts = db.enseignant.map(p => `<option value="${p.MatriculeEnseignant}">${p.nom} ${p.prenom}</option>`).join('');
+            const nivOpts = db.niveau.map(n => `<option value="${n.codeNiveau}">${n.libelle}</option>`).join('');
+
+            // Affectations selects
+            document.getElementById('select-suivre-classe').innerHTML = clsOpts;
+            document.getElementById('select-suivre-cours').innerHTML = crsOpts;
+            document.getElementById('select-disp-prof').innerHTML = prfOpts;
+            document.getElementById('select-disp-cours').innerHTML = crsOpts;
+            
+            // Modals Selects
+            document.getElementById('el-classe').innerHTML = clsOpts;
+            const actAnnee = db.anneeScolaire.find(a => a.CodeAnnee === ACTIVE_YEAR);
+            document.getElementById('el-annee').innerHTML = `<option value="${ACTIVE_YEAR}">${actAnnee.libelle}</option>`;
+            document.getElementById('cl-niveau').innerHTML = nivOpts;
+
+            // Filtres
+            const currentFilter = document.getElementById('filter-classe-eleve').value;
+            document.getElementById('filter-classe-eleve').innerHTML = `<option value="">Toutes les classes</option>` + clsOpts;
+            document.getElementById('filter-classe-eleve').value = currentFilter;
+        }
+
+        function addAnnee() {
+            const v = document.getElementById('input-annee-lib').value;
+            if(!v) return;
+            const code = 'A' + v.replace(/[^0-9]/g, '').substring(2,4) + '-' + v.replace(/[^0-9]/g, '').substring(6,8);
+            db.anneeScolaire.push({ CodeAnnee: code, libelle: v });
+            document.getElementById('input-annee-lib').value = '';
+            renderData(); showNotif("Année ajoutée");
+        }
+        function addNiveau() {
+            const v = document.getElementById('input-niveau-lib').value;
+            if(!v) return;
+            db.niveau.push({ codeNiveau: 'N'+(db.niveau.length+1), libelle: v });
+            document.getElementById('input-niveau-lib').value = '';
+            renderData(); showNotif("Niveau ajouté");
+        }
+        function addPeriode() {
+            const v = document.getElementById('input-periode-lib').value;
+            if(!v) return;
+            db.periode.push({ CodePeriode: 'P'+Date.now().toString().slice(-3), libelle: v, codeAnnee: ACTIVE_YEAR });
+            document.getElementById('input-periode-lib').value = '';
+            renderData(); showNotif("Période ajoutée");
+        }
+
+        function submitClasse() {
+            const c = {
+                CodeClasse: document.getElementById('cl-code').value.toUpperCase(),
+                libelle: document.getElementById('cl-lib').value,
+                capaciteMax: document.getElementById('cl-cap').value,
+                codeniveau: document.getElementById('cl-niveau').value
+            };
+            db.classe.push(c);
+            toggleModal('modal-add-classe'); renderData(); showNotif("Classe créée");
+        }
+
+        function submitCours() {
+            const c = {
+                codecours: document.getElementById('cr-code').value.toUpperCase(),
+                titre: document.getElementById('cr-titre').value,
+                volumeHoraire: document.getElementById('cr-vol').value
+            };
+            db.cours.push(c);
+            toggleModal('modal-add-cours'); renderData(); showNotif("Cours créé");
+        }
+
+        // --- GESTION DES ASSOCIATIONS ---
+        function addRelationSuivre() {
+            const c = document.getElementById('select-suivre-classe').value;
+            const cr = document.getElementById('select-suivre-cours').value;
+            if(!db.suivre.find(x => x.Codeclasse === c && x.codecours === cr)) {
+                db.suivre.push({ Codeclasse: c, codecours: cr });
+                renderData(); showNotif("Cours affecté à la classe");
+            }
+        }
+
+        function addRelationDispenser() {
+            const p = document.getElementById('select-disp-prof').value;
+            const c = document.getElementById('select-disp-cours').value;
+            if(!db.dispenser.find(x => x.matriculeEnseignant === p && x.Codecours === c)) {
+                db.dispenser.push({ matriculeEnseignant: p, Codecours: c });
+                renderData(); showNotif("Cours attribué à l'enseignant");
+            }
+        }
+
+        // --- GESTION DES ACTEURS (Eleves & Profs) ---
+        function submitEleve(e) {
+            e.preventDefault();
+            const mat = 'MAT' + String(db.eleve.length + 1).padStart(3, '0');
+            const newEleve = {
+                Matricule: mat,
+                nom: document.getElementById('el-nom').value.toUpperCase(),
+                Postnom: document.getElementById('el-postnom').value.toUpperCase(),
+                prenom: document.getElementById('el-prenom').value,
+                sexe: document.getElementById('el-sexe').value,
+                DateNaissance: document.getElementById('el-date').value,
+                TelephoneParent: document.getElementById('el-tel').value,
+                Adresse: document.getElementById('el-adresse').value,
+                CodeClasse: document.getElementById('el-classe').value // Clé étrangère
+            };
+            db.eleve.push(newEleve);
+
+            // Création de l'association FREQUENTER automatique lors de l'inscription
+            db.frequenter.push({
+                MatriculeEleve: mat,
+                codeAnnee: document.getElementById('el-annee').value
+            });
+
+            document.getElementById('form-eleve').reset();
+            toggleModal('modal-add-eleve'); renderData(); showNotif("Élève inscrit (Matricule: "+mat+")");
+        }
+
+        function submitProf(e) {
+            e.preventDefault();
+            const mat = 'PRF' + String(db.enseignant.length + 1).padStart(3, '0');
+            const newProf = {
+                MatriculeEnseignant: mat,
+                nom: document.getElementById('pr-nom').value.toUpperCase(),
+                prenom: document.getElementById('pr-prenom').value,
+                sexe: document.getElementById('pr-sexe').value,
+                specialite: document.getElementById('pr-spec').value,
+                telephone: document.getElementById('pr-tel').value,
+                dateembauche: document.getElementById('pr-date').value,
+                adresse: document.getElementById('pr-adresse').value
+            };
+            db.enseignant.push(newProf);
+            document.getElementById('form-prof').reset();
+            toggleModal('modal-add-prof'); renderData(); showNotif("Enseignant recruté");
+        }
+
+        // Init
+        window.onload = () => { renderData(); switchTab('dashboard'); };
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Professeur - EduGest</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#5b21b6',
+                        secondary: '#7c3aed',
+                        accent: '#f59e0b',
+                        dark: '#1f2937',
+                        light: '#f5f3ff'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../shared/css/variables.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="text-gray-800 h-screen flex overflow-hidden">
+
+    <aside class="w-64 bg-brand text-violet-100 flex flex-col shadow-xl z-20">
+        <div class="h-16 flex items-center justify-center border-b border-violet-800 font-bold text-xl tracking-wider text-white">
+            <i class="fas fa-book-reader text-accent mr-3"></i> Espace Professeur
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-6">
+            <ul class="space-y-2">
+                <li>
+                    <a href="#" onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-link active-nav flex items-center py-3 px-6 hover:text-white transition-colors">
+                        <i class="fas fa-home w-6 text-center mr-2"></i> Accueil
+                    </a>
+                </li>
+                
+                <li class="px-6 py-2 text-xs font-semibold text-violet-300 uppercase tracking-wider mt-4">
+                    Pédagogie
+                </li>
+                <li>
+                    <a href="#" onclick="switchTab('classes')" id="nav-classes" class="nav-link flex items-center py-3 px-6 hover:text-white transition-colors">
+                        <i class="fas fa-chalkboard-teacher w-6 text-center mr-2"></i> Mes Classes & Cours
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="switchTab('notes')" id="nav-notes" class="nav-link flex items-center py-3 px-6 hover:text-white transition-colors">
+                        <i class="fas fa-edit w-6 text-center mr-2"></i> Saisie des Notes
+                    </a>
+                </li>
+
+                <li class="px-6 py-2 text-xs font-semibold text-violet-300 uppercase tracking-wider mt-4">
+                    Fin de Période
+                </li>
+                <li>
+                    <a href="#" onclick="switchTab('bulletins')" id="nav-bulletins" class="nav-link flex items-center py-3 px-6 hover:text-white transition-colors">
+                        <i class="fas fa-file-signature w-6 text-center mr-2"></i> Bulletins & Moyennes
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <a href="../connexion/index.html" class="mx-4 mb-4 flex items-center justify-center gap-2 rounded-lg border border-violet-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-800">
+            <i class="fas fa-sign-out-alt"></i> Déconnexion
+        </a>
+
+        <div class="p-4 bg-violet-900 flex items-center text-sm border-t border-violet-800">
+            <div class="w-10 h-10 rounded-full bg-violet-700 flex items-center justify-center text-white mr-3 font-bold border border-violet-500" id="prof-avatar">
+                AK
+            </div>
+            <div>
+                <p class="font-bold text-white" id="prof-name">Alain KAPINGA</p>
+                <p class="text-xs text-violet-300 font-mono" id="prof-mat">PRF001</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-full relative bg-light">
+        
+        <header class="h-16 bg-white shadow-sm flex items-center justify-between px-8 z-10">
+            <h2 id="page-title" class="text-2xl font-bold text-dark">Tableau de bord enseignant</h2>
+            <div class="flex items-center space-x-4 text-sm">
+                <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded border border-gray-200 shadow-inner">
+                    <i class="fas fa-calendar-alt mr-1"></i> Année : <span class="font-bold">2026-2027</span>
+                </span>
+                <span class="bg-violet-100 text-brand px-3 py-1 rounded font-bold border border-violet-200 shadow-inner">
+                    Période Active : <span id="active-period">Trimestre 1</span>
+                </span>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-8">
+            <section id="sec-dashboard" class="fade-in block space-y-6">
+                <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-brand flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold text-dark">Bienvenue dans votre espace !</h2>
+                        <p class="text-gray-500 mt-1 text-sm">Vos données sont filtrées selon les tables <code>Dispenser</code> et <code>Suivre</code>.</p>
+                    </div>
+                    <button onclick="switchTab('notes')" class="bg-brand text-white px-4 py-2 rounded hover:bg-violet-800 transition shadow">
+                        <i class="fas fa-plus mr-2"></i> Nouvelle Évaluation
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center">
+                        <div class="w-14 h-14 rounded-lg bg-violet-50 flex items-center justify-center text-brand text-2xl mr-4">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 font-medium">Cours Dispensés</p>
+                            <h3 class="text-2xl font-bold text-dark" id="stat-cours">0</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center">
+                        <div class="w-14 h-14 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 text-2xl mr-4">
+                            <i class="fas fa-users-class"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 font-medium">Classes sous ma charge</p>
+                            <h3 class="text-2xl font-bold text-dark" id="stat-classes">0</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center">
+                        <div class="w-14 h-14 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 text-2xl mr-4">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 font-medium">Élèves évalués</p>
+                            <h3 class="text-2xl font-bold text-dark" id="stat-eleves">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
+                        <h3 class="font-bold text-dark text-lg"><i class="fas fa-history text-gray-400 mr-2"></i> Mes Dernières Évaluations</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-white text-gray-500 border-b uppercase text-xs">
+                                <tr>
+                                    <th class="px-6 py-3 font-medium">Date</th>
+                                    <th class="px-6 py-3 font-medium">Type</th>
+                                    <th class="px-6 py-3 font-medium">Cours</th>
+                                    <th class="px-6 py-3 font-medium text-center">Élèves Notés</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dash-evals-body" class="divide-y divide-gray-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sec-classes" class="hidden fade-in space-y-6">
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-6">
+                    <h2 class="text-lg font-bold text-blue-900 mb-2"><i class="fas fa-info-circle mr-2"></i> Mes Affectations</h2>
+                    <p class="text-blue-800 text-sm">Liste des classes liées à vos cours via les tables <code>Dispenser</code>, <code>Suivre</code> et <code>Classe</code>.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" id="my-classes-grid"></div>
+            </section>
+
+            <section id="sec-notes" class="hidden fade-in space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="bg-brand p-6 text-white flex justify-between items-center">
+                        <div>
+                            <h2 class="text-xl font-bold"><i class="fas fa-edit mr-2"></i> Créer une Évaluation</h2>
+                            <p class="text-violet-200 text-sm mt-1">Table : Evaluation (IdEvaluation, type, date, note, #codecours, #MatriculeEleve)</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 pb-6 border-b border-gray-200">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">Cours concerné *</label>
+                                <select id="eval-cours" class="w-full border-gray-300 rounded p-2 focus:ring-brand focus:border-brand" onchange="updateEvalClasses()"></select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">Classe ciblée *</label>
+                                <select id="eval-classe" class="w-full border-gray-300 rounded p-2 focus:ring-brand focus:border-brand" onchange="loadStudentsForEval()">
+                                    <option value="">-- Choisir --</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">Type d'évaluation *</label>
+                                <select id="eval-type" class="w-full border-gray-300 rounded p-2 focus:ring-brand focus:border-brand">
+                                    <option value="Interrogation">Interrogation</option>
+                                    <option value="Devoir">Devoir à domicile</option>
+                                    <option value="Examen">Examen Périodique</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">Date *</label>
+                                <input type="date" id="eval-date" required class="w-full border-gray-300 rounded p-2 focus:ring-brand focus:border-brand">
+                            </div>
+                        </div>
+
+                        <div id="eval-students-section" class="hidden">
+                            <div class="flex justify-between items-end mb-4">
+                                <h3 class="font-bold text-gray-800">Saisie des notes (sur 20)</h3>
+                                <button onclick="saveBulkEvaluations()" class="bg-emerald-600 text-white px-6 py-2 rounded shadow hover:bg-emerald-700 font-bold transition">
+                                    <i class="fas fa-save mr-2"></i> Enregistrer les notes
+                                </button>
+                            </div>
+                            <div class="overflow-x-auto border rounded-lg">
+                                <table class="w-full text-sm text-left">
+                                    <thead class="bg-gray-50 text-gray-600 border-b">
+                                        <tr>
+                                            <th class="px-6 py-3 font-medium w-32">Matricule</th>
+                                            <th class="px-6 py-3 font-medium">Nom, Postnom, Prénom</th>
+                                            <th class="px-6 py-3 font-medium text-right w-40">Note Obtenue /20</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="eval-students-list" class="divide-y divide-gray-100"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="eval-empty-state" class="text-center py-10 text-gray-400">
+                            <i class="fas fa-hand-pointer text-4xl mb-3"></i>
+                            <p>Veuillez sélectionner un cours et une classe pour afficher la liste des élèves.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sec-bulletins" class="hidden fade-in space-y-6">
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-6 flex items-start">
+                    <i class="fas fa-exclamation-triangle text-accent text-2xl mr-4 mt-1"></i>
+                    <div>
+                        <h2 class="text-lg font-bold text-amber-900">Préparation des Bulletins</h2>
+                        <p class="text-amber-800 text-sm mt-1">Clôturez la période active. Cette section calcule la moyenne de chaque élève pour votre cours et prépare les données pour le bulletin final.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex gap-4 mb-6">
+                        <select id="bull-cours" class="border rounded p-2 focus:ring-brand w-64" onchange="updateBullClasses()"></select>
+                        <select id="bull-classe" class="border rounded p-2 focus:ring-brand w-64"></select>
+                        <button onclick="calculateAverages()" class="bg-dark text-white px-4 py-2 rounded hover:bg-gray-700">
+                            <i class="fas fa-calculator mr-2"></i> Calculer les moyennes
+                        </button>
+                    </div>
+                    <div id="averages-results" class="hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-gray-100 text-gray-700 border-b">
+                                    <tr>
+                                        <th class="px-4 py-3">Matricule</th>
+                                        <th class="px-4 py-3">Élève</th>
+                                        <th class="px-4 py-3 text-center">Nbr. Évaluations</th>
+                                        <th class="px-4 py-3 text-right">Moyenne (Période)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="averages-body" class="divide-y divide-gray-100"></tbody>
+                            </table>
+                        </div>
+                        <div class="mt-4 flex justify-end">
+                            <button onclick="submitAveragesToAdmin()" class="bg-brand text-white px-6 py-2 rounded shadow hover:bg-violet-800 font-bold">
+                                Transmettre au Secrétariat
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="../shared/js/utils.js"></script>
+    <script src="js/prof-logic.js"></script>
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion Centrale - EduGest</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        admin: '#1e3a8a',   // Bleu (Direction)
+                        finance: '#047857', // Emeraude (Caisse)
+                        prof: '#6d28d9',    // Violet (Enseignant)
+                        eleve: '#0d9488',   // Sarcelle (Eleve)
+                        dark: '#0f172a',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f8fafc; 
+        }
+
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; opacity: 0; }
+        .slide-up { animation: slideUp 0.6s ease-out forwards; opacity: 0; transform: translateY(20px); }
+        .zoom-in { animation: zoomIn 0.3s ease-out forwards; opacity: 0; transform: scale(0.95); }
+        
+        @keyframes fadeIn { to { opacity: 1; } }
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes zoomIn { to { opacity: 1; transform: scale(1); } }
+
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+
+        /* Dégradé animé fusionnant les 4 couleurs */
+        .bg-mesh-animated {
+            background: linear-gradient(-45deg, #1e3a8a, #6d28d9, #0d9488, #047857);
+            background-size: 300% 300%;
+            animation: gradientFlow 12s ease infinite;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .float { animation: floating 6s ease-in-out infinite; }
+        .float-delayed { animation: floating 6s ease-in-out 3s infinite; }
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        ::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="min-h-screen flex text-slate-800">
+
+    <div class="hidden lg:flex lg:w-5/12 relative overflow-hidden flex-col justify-between p-12 text-white bg-mesh-animated shadow-[inset_-20px_0_40px_rgba(0,0,0,0.1)]">
+        
+        <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/ %3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+        
+        <div class="absolute top-20 right-10 w-32 h-32 bg-white/10 backdrop-blur-md rounded-full float border border-white/20 shadow-2xl"></div>
+        <div class="absolute bottom-40 -left-10 w-48 h-48 bg-white/10 backdrop-blur-xl rounded-full float-delayed border border-white/20 shadow-2xl"></div>
+
+        <div class="relative z-10 fade-in">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl flex items-center justify-center text-white text-3xl shadow-2xl">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <h1 class="text-4xl font-extrabold tracking-tight drop-shadow-md">EduGest</h1>
+            </div>
+        </div>
+
+        <div class="relative z-10 slide-up delay-100 max-w-lg mt-12">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 text-sm font-medium mb-6">
+                <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                Système Centralisé
+            </div>
+            <h2 class="text-5xl font-bold leading-tight mb-6 drop-shadow-md">Un seul portail,<br>quatre dimensions.</h2>
+            <p class="text-white/90 text-lg font-light leading-relaxed">
+                Connectez-vous pour accéder à votre espace de travail dédié. Les données académiques, pédagogiques et financières sont synchronisées en temps réel.
+            </p>
+        </div>
+
+        <div class="relative z-10 fade-in delay-200 flex items-center gap-6 text-sm text-white/70 font-medium mt-auto pt-12">
+            <span>&copy; 2026 EduGest Systems.</span>
+            <span class="w-1 h-1 rounded-full bg-white/50"></span>
+            <a href="#" class="hover:text-white transition">Support Technique</a>
+        </div>
+    </div>
+
+    <div class="w-full lg:w-7/12 flex flex-col justify-center px-6 sm:px-12 lg:px-20 xl:px-28 bg-slate-50 relative">
+        
+        <div class="max-w-2xl w-full mx-auto slide-up delay-100">
+            
+            <div class="flex lg:hidden items-center justify-center gap-3 mb-10">
+                <div class="w-12 h-12 bg-mesh-animated rounded-xl flex items-center justify-center text-white text-2xl shadow-lg">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <h1 class="text-3xl font-extrabold text-slate-800 tracking-tight">EduGest</h1>
+            </div>
+
+            <div class="mb-10 text-center lg:text-left">
+                <h2 class="text-3xl lg:text-4xl font-bold text-slate-800">Sélectionnez votre espace</h2>
+                <p class="text-slate-500 mt-3 text-lg">Cliquez sur le portail correspondant à votre profil pour y accéder.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <button onclick="selectPortal('admin')" id="card-admin" class="flex flex-col text-left bg-white p-6 rounded-2xl border-2 border-transparent shadow-sm hover:shadow-xl hover:border-admin/30 group transition-all duration-300 relative overflow-hidden">
+                    <div class="w-14 h-14 rounded-xl bg-blue-50 text-admin flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-hover:bg-admin group-hover:text-white transition-all duration-300">
+                        <i class="fas fa-school"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 group-hover:text-admin transition-colors">Direction</h3>
+                    <p class="text-sm text-slate-500 mt-1">Secrétariat & Paramétrage</p>
+                    <div class="mt-4 inline-flex items-center text-xs font-bold text-admin bg-blue-50 px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                        Poste Dédié (Accès Libre) <i class="fas fa-arrow-right ml-2"></i>
+                    </div>
+                    <div id="loader-admin" class="absolute inset-0 bg-white/90 backdrop-blur-sm hidden flex-col items-center justify-center z-10">
+                        <i class="fas fa-circle-notch fa-spin text-admin text-3xl mb-2"></i>
+                        <span class="text-admin font-bold text-sm">Ouverture...</span>
+                    </div>
+                </button>
+                <button onclick="selectPortal('caisse')" id="card-caisse" class="flex flex-col text-left bg-white p-6 rounded-2xl border-2 border-transparent shadow-sm hover:shadow-xl hover:border-finance/30 group transition-all duration-300 relative overflow-hidden">
+                    <div class="w-14 h-14 rounded-xl bg-emerald-50 text-finance flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-hover:bg-finance group-hover:text-white transition-all duration-300">
+                        <i class="fas fa-cash-register"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 group-hover:text-finance transition-colors">Caisse</h3>
+                    <p class="text-sm text-slate-500 mt-1">Comptabilité & Paiements</p>
+                    <div class="mt-4 inline-flex items-center text-xs font-bold text-finance bg-emerald-50 px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                        Guichet (Accès Libre) <i class="fas fa-arrow-right ml-2"></i>
+                    </div>
+                    <div id="loader-caisse" class="absolute inset-0 bg-white/90 backdrop-blur-sm hidden flex-col items-center justify-center z-10">
+                        <i class="fas fa-circle-notch fa-spin text-finance text-3xl mb-2"></i>
+                        <span class="text-finance font-bold text-sm">Ouverture...</span>
+                    </div>
+                </button>
+                <button onclick="selectPortal('prof')" class="flex flex-col text-left bg-white p-6 rounded-2xl border-2 border-transparent shadow-sm hover:shadow-xl hover:border-prof/30 group transition-all duration-300">
+                    <div class="w-14 h-14 rounded-xl bg-violet-50 text-prof flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-hover:bg-prof group-hover:text-white transition-all duration-300">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 group-hover:text-prof transition-colors">Enseignant</h3>
+                    <p class="text-sm text-slate-500 mt-1">Notes & Bulletins</p>
+                    <div class="mt-4 inline-flex items-center text-xs font-bold text-slate-500 group-hover:text-prof transition-colors">
+                        <i class="fas fa-lock mr-1.5"></i> Authentification requise
+                    </div>
+                </button>
+                <button onclick="selectPortal('eleve')" class="flex flex-col text-left bg-white p-6 rounded-2xl border-2 border-transparent shadow-sm hover:shadow-xl hover:border-eleve/30 group transition-all duration-300">
+                    <div class="w-14 h-14 rounded-xl bg-teal-50 text-eleve flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-hover:bg-eleve group-hover:text-white transition-all duration-300">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 group-hover:text-eleve transition-colors">Élève</h3>
+                    <p class="text-sm text-slate-500 mt-1">Consultation du dossier</p>
+                    <div class="mt-4 inline-flex items-center text-xs font-bold text-slate-500 group-hover:text-eleve transition-colors">
+                        <i class="fas fa-lock mr-1.5"></i> Authentification requise
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="auth-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center">
+        <div class="absolute inset-0" onclick="closeAuthModal()"></div>
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 relative overflow-hidden zoom-in z-10 m-4">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+            <div id="modal-icon-container" class="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mb-6 shadow-lg">
+                <i id="modal-icon" class="fas fa-user"></i>
+            </div>
+            <h3 id="modal-title" class="text-2xl font-bold text-slate-800 mb-2">Connexion</h3>
+            <p id="modal-desc" class="text-sm text-slate-500 mb-6">Veuillez saisir votre matricule pour continuer.</p>
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+                <div class="space-y-2 mb-6">
+                    <label class="block text-sm font-bold text-slate-700">Identifiant Unique</label>
+                    <div class="relative">
+                        <input type="text" id="matricule-input" required autocomplete="off" placeholder="Ex: MAT001 ou PRF001" class="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-slate-200 rounded-xl focus:bg-white focus:outline-none transition-all shadow-sm font-mono font-bold text-slate-700">
+                        <i class="fas fa-id-badge absolute left-4 top-4.5 text-slate-400 text-xl"></i>
+                    </div>
+                </div>
+                <button type="submit" id="modal-submit-btn" class="w-full text-white font-bold text-lg py-4 rounded-xl shadow-lg transition-transform hover:-translate-y-0.5 flex items-center justify-center relative overflow-hidden">
+                    <span id="btn-text">Se connecter</span>
+                    <i id="btn-icon" class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const routes = {
+            'admin': '../admin/index.html',
+            'caisse': '../caisse/index.html',
+            'prof': '../professeur/index.html',
+            'eleve': '../portail-eleve/index.html'
+        };
+
+        const roleColors = {
+            'admin': 'text-admin',
+            'caisse': 'text-finance',
+            'prof': 'text-prof',
+            'eleve': 'text-eleve'
+        };
+
+        let currentAuthRole = '';
+
+        function selectPortal(role) {
+            if (role === 'admin' || role === 'caisse') {
+                const loader = document.getElementById(`loader-${role}`);
+                loader.classList.remove('hidden');
+                loader.classList.add('flex');
+                setTimeout(() => {
+                    redirect(role);
+                }, 800);
+            } else {
+                openAuthModal(role);
+            }
+        }
+
+        function openAuthModal(role) {
+            currentAuthRole = role;
+            const modal = document.getElementById('auth-modal');
+            const iconContainer = document.getElementById('modal-icon-container');
+            const icon = document.getElementById('modal-icon');
+            const title = document.getElementById('modal-title');
+            const desc = document.getElementById('modal-desc');
+            const btn = document.getElementById('modal-submit-btn');
+            const input = document.getElementById('matricule-input');
+
+            iconContainer.className = 'w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mb-6 shadow-lg';
+            btn.className = 'w-full text-white font-bold text-lg py-4 rounded-xl shadow-lg transition-transform hover:-translate-y-0.5 flex items-center justify-center relative overflow-hidden group';
+            input.className = 'w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-slate-200 rounded-xl focus:bg-white focus:outline-none transition-all shadow-sm font-mono font-bold text-slate-700';
+
+            if (role === 'prof') {
+                iconContainer.classList.add('bg-violet-100', 'text-prof');
+                icon.className = 'fas fa-chalkboard-teacher';
+                title.innerText = 'Espace Enseignant';
+                desc.innerText = 'Saisissez votre matricule (Ex: PRF001).';
+                btn.classList.add('bg-prof');
+                input.classList.add('focus:border-prof');
+            } else if (role === 'eleve') {
+                iconContainer.classList.add('bg-teal-100', 'text-eleve');
+                icon.className = 'fas fa-user-graduate';
+                title.innerText = 'Espace Élève';
+                desc.innerText = 'Saisissez votre matricule (Ex: MAT001).';
+                btn.classList.add('bg-eleve');
+                input.classList.add('focus:border-eleve');
+            }
+
+            document.getElementById('auth-form').reset();
+            document.getElementById('btn-text').innerText = 'Se connecter';
+            document.getElementById('btn-icon').className = 'fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform';
+            modal.classList.remove('hidden');
+            setTimeout(() => input.focus(), 100);
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+        }
+
+        function handleAuthSubmit(event) {
+            event.preventDefault();
+            const btnText = document.getElementById('btn-text');
+            const btnIcon = document.getElementById('btn-icon');
+            btnText.innerText = 'Vérification...';
+            btnIcon.className = 'fas fa-circle-notch fa-spin ml-2';
+            setTimeout(() => {
+                closeAuthModal();
+                redirect(currentAuthRole);
+            }, 800);
+        }
+
+        function redirect(role) {
+            const targetFile = routes[role];
+            const notif = document.createElement('div');
+            notif.className = 'fixed top-6 right-6 bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl z-50 fade-in flex items-center gap-4 border border-slate-700 backdrop-blur-sm bg-opacity-95';
+            const bgLightClass = role === 'admin' ? 'bg-blue-500' : role === 'caisse' ? 'bg-emerald-500' : role === 'prof' ? 'bg-violet-500' : 'bg-teal-500';
+            const colorClass = role === 'admin' ? 'text-admin' : role === 'caisse' ? 'text-finance' : role === 'prof' ? 'text-prof' : 'text-eleve';
+
+            notif.innerHTML = `
+                <div class="w-10 h-10 ${bgLightClass}/20 ${colorClass} rounded-full flex items-center justify-center text-lg border border-white/20">
+                    <i class="fas fa-unlock-alt"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-sm text-white">Connexion établie</p>
+                    <p class="text-xs text-slate-400 mt-0.5">Ouverture du portail...</p>
+                </div>
+            `;
+            document.body.appendChild(notif);
+            setTimeout(() => {
+                window.location.href = targetFile;
+            }, 1200);
+        }
+    </script>
+</body>
+</html>
