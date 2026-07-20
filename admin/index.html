@@ -591,6 +591,10 @@
             ]
         };
 
+        // Les données sont chargées exclusivement depuis SQL Server par admin-sql-sync.js.
+        // Cette initialisation vide empêche toute donnée de démonstration d'être affichée.
+        db = { anneeScolaire: [], niveau: [], periode: [], classe: [], cours: [], eleve: [], enseignant: [], frequenter: [], suivre: [], dispenser: [] };
+
         const ACTIVE_YEAR = 'A26-27'; // L'année scolaire en cours gérée par le secrétariat
 
         // --- 2. LOGIQUE DE NAVIGATION ---
