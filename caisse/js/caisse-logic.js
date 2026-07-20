@@ -19,6 +19,18 @@ const db = {
 const ACTIVE_PERIOD = 'T1-2026';
 let receiptCounter = 103;
 
+async function loadDatabase() {
+    db.eleve = [];
+    db.periode = [];
+    db.paiement = [];
+    const [eleves, periodes, paiements] = await Promise.all([
+        Api.getEleves(), Api.getPeriodes(), Api.getPaiements()
+    ]);
+    db.eleve = eleves;
+    db.periode = periodes;
+    db.paiement = paiements;
+}
+
 const sections = ['dashboard', 'encaisser', 'historique', 'eleves'];
 const pageTitles = {
     'dashboard': 'Tableau de bord financier',
@@ -152,8 +164,27 @@ function updateStudentInfo() {
     }
 }
 
-function processPaiement(e) {
+async function processPaiement(e) {
     e.preventDefault();
+
+    try {
+        const paiement = await Api.createPaiement({
+            montant: Number(document.getElementById('pay-montant').value),
+            modepaiement: document.getElementById('pay-mode').value,
+            tranche: document.getElementById('pay-tranche').value,
+            codePeriode: document.getElementById('pay-periode').value,
+            matriculeEleve: document.getElementById('pay-eleve').value
+        });
+        db.paiement.unshift(paiement);
+        document.getElementById('form-paiement').reset();
+        document.getElementById('student-info-card').classList.add('hidden');
+        renderData();
+        viewReceipt(paiement.NumPaiement);
+        showNotification('Encaissement enregistré avec succès.');
+    } catch (error) {
+        showNotification(error.message);
+    }
+    return;
 
     const now = new Date();
     const dateStr = now.toISOString().split('T')[0] + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
@@ -221,7 +252,12 @@ function showNotification(message) {
     setTimeout(() => { notif.style.opacity = 0; setTimeout(() => notif.remove(), 300); }, 3000);
 }
 
-window.onload = () => {
+window.onload = async () => {
+    try {
+        await loadDatabase();
+    } catch (error) {
+        showNotification(`Connexion SQL Server impossible : ${error.message}`);
+    }
     renderData();
     switchTab('dashboard');
 };
